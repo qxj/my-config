@@ -1,0 +1,13 @@
+# -*- conf -*-
+
+[mysql]
+auto-rehash
+pager = less -FX
+prompt = '[\d]> '
+
+# [client]
+# host = localhost
+# user = user
+# password = passwd
+# database = dbname
+# default-character-set = utf8

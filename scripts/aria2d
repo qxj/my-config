@@ -1,0 +1,39 @@
+#!/bin/bash
+
+a=$1
+if [[ -z $a ]]; then
+	a=start
+fi
+
+aria2cfg=/home/jqian/.aria2/aria2.conf
+aria2ses=/home/jqian/.aria2/aria2.session
+
+update_tracker()
+{
+	list=`wget -qO- https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt|awk NF|sed ":a;N;s/\n/,/g;ta"`
+	if [ -z "`grep "bt-tracker" $aria2cfg`" ]; then
+		sed -i '$a bt-tracker='$list $aria2cfg
+		echo add...
+	else
+		sed -i "s@bt-tracker.*@bt-tracker=$list@g" $aria2cfg
+		echo update...
+	fi
+}
+
+case $a in
+	"start")
+	echo "start aria2 as service..."
+	/usr/bin/aria2c --enable-rpc=true --input-file=$aria2ses --conf-path=$aria2cfg -D
+	;;
+	"stop")
+	echo "stop aria2 process..."
+	pkill aria2
+	;;
+	"update")
+	update_tracker
+	;;
+	*)
+	echo "wrong argument"
+	;;
+esac
+

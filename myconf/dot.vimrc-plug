@@ -1,0 +1,618 @@
+" .vimrc
+" vim: ts=2 sts=2 sw=2 expandtab
+
+" Initialisation
+" {{{
+if empty(glob("~/.vim/autoload/plug.vim"))
+  silent !mkdir -p ~/.vim/autoload
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim
+endif
+
+let s:vimdir = expand("~") . "/.vim"
+let s:has_ag = executable('ag')
+
+augroup vimrc
+  autocmd!
+augroup END
+" }}}
+
+" General Settings
+" {{{
+set nocompatible
+"set encoding=utf-8
+"scriptencoding utf-8
+set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
+set enc=utf8
+set fencs=utf8,gbk,gb2312,gb18030
+"set clipboard=unnamed " system clipboard, vim7.4+
+
+
+" file handling
+filetype plugin indent on
+set hidden
+set nobackup
+" set autowrite
+set modeline
+set modelines=2
+
+" searching
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+if s:has_ag
+  let &grepprg = "ag --smart-case --nogroup"
+endif
+
+" store swapfiles in a central location
+set directory=~/.vim/tmp/swap//,.,/var/tmp//,/tmp//
+if !isdirectory(s:vimdir . '/tmp/swap')
+  call mkdir(s:vimdir . '/tmp/swap', 'p')
+endif
+
+" enable persistent undo
+if has('persistent_undo')
+  set undofile
+  set undodir=~/.vim/tmp/undo
+
+  if !isdirectory(&undodir)
+    call mkdir(&undodir, 'p')
+  endif
+endif
+
+set viminfo+=n~/.vim/viminfo
+
+" Set the working directory to wherever the open file lives
+set autochdir
+
+" }}}
+
+" GUI settings
+" {{{
+if has("gui_running")
+  " ~/.gvimrc
+  set lines=40
+  set columns=100
+  set guifont=mononoki-Regular\ Nerd\ Font\ Complete:h12
+  set guifont=Bitstream\ Vera\ Sans\ Mono\ Nerd\ Font\ Complete:h12
+  set guifont=Space\ Mono\ Nerd\ Font\ Complete:h12
+  set guifont=Monoid\ Retina\ Nerd\ Font\ Complete:h12
+  set guifont=Knack\ Regular\ Nerd\ Font\ Complete:h12
+  set guifont=DejaVu\ Sans\ Mono\ Nerd\ Font\ Complete:h12
+  set guifont=FiraCode-Light:h12
+  set guifont=Roboto\ Mono\ Light\ Nerd\ Font\ Complete:h12
+endif
+" }}}
+
+" Display Settings
+" {{{
+
+" interface
+syntax on
+
+set errorbells
+set visualbell t_vb= " disable bells
+set cmdheight=1
+set synmaxcol=1000 " disable syntax highlighting on long lines
+set lazyredraw " speed up on large files
+if !&diff
+  set nocursorline
+endif
+
+" mouse support
+set mouse=a
+set ttymouse=xterm2
+
+" increase command-line height during startup to avoid prompt on long filenames
+" set cmdheight=2
+" autocmd vimrc VimEnter * set cmdheight=1
+
+" windows
+set splitbelow
+set splitright
+
+" disable preview window for completion
+"set completeopt-=preview
+
+" show line numbers
+set number
+set numberwidth=6
+set norelativenumber
+
+" scrolling
+set scrolloff=5
+set sidescrolloff=8
+set sidescroll=1
+set virtualedit+=block
+set nostartofline
+set display+=lastline
+
+if has('conceal')
+  set concealcursor=nvc
+  set conceallevel=0
+endif
+
+" command prompt and status line
+set showcmd
+set ruler
+set laststatus=2
+set history=1000
+set report=0
+set wildmenu
+set wildmode=list:longest,full
+set wildignore+=*.pyc,*.a,*.o,*.lo,*.la,*.exe,*.swp,*.db
+set wildignore+=*.bak,*.old,*.dat,*.tmp,*.mdb,*~,~*
+
+" automatically open quickfix window after commands that modify the quickfix list
+autocmd vimrc QuickFixCmdPost *grep* if len(getqflist()) | copen | endif
+
+" highlight trailing whitespace
+autocmd vimrc VimEnter,Colorscheme * highlight Whitespace ctermbg=235 guibg=#333333
+autocmd vimrc VimEnter,Colorscheme * match Whitespace /[^ \t]\s\+$/
+
+" go to last cursor position when opening files
+autocmd vimrc BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &ft != 'gitcommit' | exe "normal g'\"" | endif
+" }}}
+
+" Text Formatting
+" {{{
+set formatoptions+=j
+set backspace=indent,eol,start
+set whichwrap+=<,>,[,],h,l
+set iskeyword+=$
+set selection=inclusive
+
+" indents
+set autoindent
+
+" tabs
+set ts=2 sts=2 sw=2
+set expandtab  " replace <Tab with spaces
+set smarttab
+set shiftround " round indent to multiple of 'shiftwidth'
+
+" matching
+set matchpairs=(:),{:},[:],<:>
+set showmatch
+runtime macros/matchit.vim
+let b:match_ignorecase = 1
+
+" diffing
+set diffopt+=vertical,iwhite
+
+" folding
+set foldenable foldmethod=marker
+autocmd vimrc Syntax * set foldmethod=marker
+set nofoldenable  " close folding
+" }}}
+
+" Filetype Settings
+" {{{
+autocmd vimrc FileType c,cs,cpp,php setlocal ts=2 sts=2 sw=2
+autocmd vimrc FileType python,apache,sshconfig setlocal ts=4 sts=4 sw=4
+autocmd vimrc FileType css,scss setlocal iskeyword+=%
+autocmd vimrc FileType make setlocal noexpandtab
+autocmd vimrc FileType mail setlocal tw=80 lbr
+autocmd vimrc FileType tex,plaintex,context setlocal lbr
+autocmd vimrc FileType gitcommit,gitrebase setlocal spell colorcolumn=50,72
+autocmd vimrc FileType crontab setlocal nobackup nowritebackup
+autocmd vimrc FileType help setlocal nonumber norelativenumber
+" }}}
+
+" Commands
+" {{{
+
+" helper to preserve search and cursor position
+command! -nargs=1 Preserve call <SID>Preserve(<args>)
+function! s:Preserve(command) " {{{
+  let search=@/
+  let line = line('.')
+  let column = col('.')
+  execute a:command
+  let @/ = search
+  call cursor(line, column)
+endfunction " }}}
+
+command! -nargs=1 PreserveSearch call <SID>PreserveSearch(<args>)
+function! s:PreserveSearch(command) " {{{
+  let search=@/
+  execute a:command
+  let @/ = search
+endfunction " }}}
+
+" }}}
+
+" Keybindings
+" {{{
+
+let mapleader="\\"
+
+vnoremap <Leader>y "Copy selected text to system clipboard
+nmap <Leader>p "Paste system clipboard to vim
+nnoremap <CR> :noh<CR><CR>
+
+" Disable search highlighting
+nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
+
+" indent
+vnoremap < <gv
+vnoremap > >gv
+
+" paste and put cursor at end
+vnoremap y y`]
+vnoremap p p`]
+nnoremap p p`]
+
+" nmap <Leader>W :w !sudo tee %<CR>
+ca w!! w !sudo tee "%"
+
+" tab navigation mappings
+map tn :tabn<CR>
+map tp :tabp<CR>
+map tm :tabm
+map tt :tabnew
+map ts :tab split<CR>
+map <C-S-Right> :tabn<CR>
+imap <C-S-Right> <ESC>:tabn<CR>
+map <C-S-Left> :tabp<CR>
+imap <C-S-Left> <ESC>:tabp<CR>
+
+" Keep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
+" navigate windows with meta+arrows
+map <M-Right> <c-w>l
+map <M-Left> <c-w>h
+map <M-Up> <c-w>k
+map <M-Down> <c-w>j
+imap <M-Right> <ESC><c-w>l
+imap <M-Left> <ESC><c-w>h
+imap <M-Up> <ESC><c-w>k
+imap <M-Down> <ESC><c-w>
+
+" ,q and ,e - toggle quickfix window and location list
+nnoremap <silent> <Leader>q :call <SID>ToggleList('Quickfix List', 'c')<CR>
+nnoremap <silent> <Leader>e :call <SID>ToggleList('Location List', 'l')<CR>
+function! GetBufferList() " {{{
+  redir =>buflist
+  silent! ls
+  redir END
+  return buflist
+endfunction " }}}
+function! s:ToggleList(bufname, pfx) " {{{
+  let buflist = GetBufferList()
+  for bufnum in map(filter(split(buflist, '\n'), 'v:val =~ "'.a:bufname.'"'), 'str2nr(matchstr(v:val, "\\d\\+"))')
+    if bufwinnr(bufnum) != -1
+      exec(a:pfx.'close')
+      if a:pfx == 'l'
+        execute 'SyntasticReset'
+      endif
+      return
+    endif
+  endfor
+  if a:pfx == 'c' && !len(getqflist())
+    echohl Question
+    echo "Quickfix list is empty."
+    return
+  elseif a:pfx == 'l' && !len(getloclist(0))
+    echohl Question
+    echo "Location list is empty."
+    return
+  endif
+  let winnr = winnr()
+  exec(a:pfx.'open')
+  if winnr() != winnr
+    wincmd p
+  endif
+endfunction " }}}
+
+" resize quickfix windows to their content, or 20 lines maximum
+autocmd vimrc FileType qf call <SID>ResizeWindow(2, 20)
+function! s:ResizeWindow(min, max) " {{{
+  let max = min([a:max, &lines / 3])
+  execute max([a:min, min([max, line('$') + 1])]).'wincmd _'
+endfunction " }}}
+
+" <count>` - switch buffers
+nnoremap <silent><expr> ` v:count ? ":<C-u>b<C-r>=v:count<CR><CR>" : "`"
+
+" <count>~ - delete buffers
+nnoremap <silent><expr> ~ v:count ? ":<C-u>bd<C-r>=v:count<CR><CR>" : "~"
+
+" ,n / ,p - next/previous buffer
+nnoremap <silent> <Leader>n :call SwitchBuffer(1)<CR>
+nnoremap <silent> <Leader>p :call SwitchBuffer(-1)<CR>
+function! SwitchBuffer(delta)
+  let buffers = []
+  for nr in range(1, bufnr('$'))
+    if buflisted(nr) && getbufvar(nr, 'current_syntax') != 'qf'
+      call add(buffers, nr)
+    end
+  endfor
+  if len(buffers) == 0
+    return
+  endif
+  let position = index(buffers, bufnr('%')) + a:delta
+  if position < 0
+    let position = len(buffers) - 1
+  elseif position > len(buffers) - 1
+    let position = 0
+  endif
+  execute 'buffer' . buffers[position]
+endfunction
+
+" ,c - close current window, unless it's the only one
+nnoremap <silent> <Leader>c :call <SID>CloseWindow()<CR>
+function! s:CloseWindow() " {{{
+  " get number of visible buffers
+  let buffers = len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+
+  if winnr('$') > 1
+    if bufname('%') == '[Command Line]'
+      close
+    else
+      lclose
+      wincmd c
+    endif
+  endif
+endfunction " }}}
+
+" ,x - close the current buffer, keeping windows, plugin: moll/vim-bbye
+nnoremap <silent> <Leader>x :silent lclose<CR>:silent Bdelete<CR>
+
+" ,X - close the current buffer, not keeping windows
+nnoremap <silent> <Leader>X :silent lclose<CR>:silent bd<CR>
+
+" ,d - open definition in new window
+nmap <silent> <Leader>d <C-w>f
+
+" ,r - reload current buffer
+nnoremap <silent> <Leader>r :edit<CR>
+
+" ,R - reload vimrc
+nnoremap <silent> <Leader>R :runtime! vimrc gvimrc<CR>:nohlsearch<CR>
+
+" ,s - split horizontally
+nnoremap <silent> <Leader>s :split<CR>
+
+" ,v - split vertically
+nnoremap <silent> <Leader>v :vsplit<CR>
+
+" ,w - write current buffer
+"nnoremap <silent> <Leader>w :write<CR>:redraw<CR>
+
+" ,W - write all open buffers
+"nnoremap <silent> <Leader>W :wall<CR>:redraw<CR>
+
+" ,$ - clear trailing whitespace
+nnoremap <silent> <Leader>$ :call <SID>ClearTrailingWhitespace()<CR>
+function! s:ClearTrailingWhitespace() " {{{
+  Preserve 'silent %s/\s\s*$//e'
+  echohl Question
+  echo "Trailing whitespace cleared"
+  echohl none
+endfunction " }}}
+
+" ,g and ,G - grep the current file or path
+nnoremap <silent> <Leader>g :call <SID>GrepWrapper('%')<CR>
+nnoremap <silent> <Leader>G :call <SID>GrepWrapper('.')<CR>
+function! s:GrepWrapper(path) " {{{
+  if a:path == '%' && empty(expand('%'))
+    echo "Can't grep unsaved file."
+    return
+  endif
+
+  echohl Question
+  let pattern = substitute(input("Grep " . (a:path == '%' ? 'buffer' : 'recursive') . ": /", expand('<cword>')), '"', '\"', '')
+
+  if !empty(pattern)
+    echohl Question
+    echo "/ searching..."
+    execute 'silent! grep ' . shellescape(pattern) . ' ' . a:path . ' /dev/null'
+    redraw!
+
+    let matches = len(getqflist())
+    if matches > 0
+      echo matches . " " . (matches == 1 ? "match" : "matches") . " found"
+    else
+      echohl WarningMsg
+      echo "Pattern not found: " . pattern
+    endif
+  endif
+
+  echohl None
+endfunction " }}}
+
+" ,N - toggle line numbers
+nnoremap <silent> <Leader>N :call <SID>ToggleLineNumbers()<CR>
+function! s:ToggleLineNumbers() " {{{
+  if &number
+    set nonumber norelativenumber
+  else
+    set number norelativenumber
+  endif
+endfunction " }}}
+
+" F4 / F5 - change window height
+nnoremap <silent> <F4> <C-w>+
+imap <silent> <F4> <C-o><F4>
+nnoremap <silent> <F5> <C-w>-
+imap <silent> <F5> <C-o><F5>
+
+" F6 / F7 - change window width
+nnoremap <silent> <F6> <C-w>>
+imap <silent> <F6> <C-o><F6>
+nnoremap <silent> <F7> <C-w><
+imap <silent> <F7> <C-o><F7>
+
+" }}}
+
+" Load plug-ins
+" {{{
+call plug#begin('~/.vim/plugged')
+let g:plug_timeout = 180
+
+Plug 'kshenoy/vim-signature' "书签可视化的插件
+Plug 'majutsushi/tagbar' "taglist的增强版，查看标签，依赖于ctags
+Plug 'scrooloose/nerdcommenter' "多行注释，leader键+cc生成, leader+cu删除注释
+Plug 'lifepillar/vim-mucomplete'
+"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug '/usr/local/opt/fzf' " installed by homebrew
+Plug 'junegunn/fzf.vim'
+Plug 'easymotion/vim-easymotion' "快速跳转，按两下leader键和s组合
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'davidhalter/jedi-vim'
+Plug 'ConradIrwin/vim-bracketed-paste' " 使用bracketed-paste mode，粘贴代码时避免格式化
+Plug 'airblade/vim-rooter'
+"Plug 'mhinz/vim-startify'
+Plug 'thaerkh/vim-workspace'
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+
+call plug#end()
+
+" :PlugInstall
+" }}}
+
+" Plug-ins settings
+" {{{
+
+" Airline {{{
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'bubblegum'
+let g:airline#extensions#whitespace#enabled = 0
+" }}}
+
+" tagbar {{{
+let g:tagbar_autoclose = 1
+let g:tagbar_compact = 1
+let g:tagbar_previewwin_pos = 'rightbelow'
+
+nnoremap <silent> <Leader>t :TagbarToggle<CR>
+" }}}
+
+" signature {{{
+let g:SignatureMap = {
+      \ 'Leader'             :  "m",
+      \ 'PlaceNextMark'      :  "m,",
+      \ 'ToggleMarkAtLine'   :  "m.",
+      \ 'PurgeMarksAtLine'   :  "m-",
+      \ 'DeleteMark'         :  "dm",
+      \ 'PurgeMarks'         :  "mda",
+      \ 'PurgeMarkers'       :  "m<BS>",
+      \ 'GotoNextLineAlpha'  :  "']",
+      \ 'GotoPrevLineAlpha'  :  "'[",
+      \ 'GotoNextSpotAlpha'  :  "`]",
+      \ 'GotoPrevSpotAlpha'  :  "`[",
+      \ 'GotoNextLineByPos'  :  "]'",
+      \ 'GotoPrevLineByPos'  :  "['",
+      \ 'GotoNextSpotByPos'  :  "mn",
+      \ 'GotoPrevSpotByPos'  :  "mp",
+      \ 'GotoNextMarker'     :  "[+",
+      \ 'GotoPrevMarker'     :  "[-",
+      \ 'GotoNextMarkerAny'  :  "]=",
+      \ 'GotoPrevMarkerAny'  :  "[=",
+      \ 'ListLocalMarks'     :  "ms",
+      \ 'ListLocalMarkers'   :  "m?"
+      \ }
+
+" }}}
+
+" rooter {{{
+let g:rooter_manual_only = 1
+let g:rooter_change_directory_for_non_project_files = 0
+let g:rooter_use_lcd = 1
+let g:rooter_silent_chdir = 1
+let g:rooter_patterns = ['package.json', '.git/', '.hg/', '.bzr/', '.svn/']
+
+" autocmd vimrc BufEnter * if !isdirectory(expand('%')) | Rooter
+" }}}
+
+" FZF {{{
+let g:fzf_nvim_statusline = 0 " disable statusline overwriting
+let g:fzf_layout = { 'window': 'enew' }
+
+" Mapping selecting mappings
+nmap <Leader><tab> <plug>(fzf-maps-n)
+xmap <Leader><tab> <plug>(fzf-maps-x)
+omap <Leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-j> <plug>(fzf-complete-file-ag)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+fun! s:fzf_root()
+	let path = finddir(".git", expand("%:p:h").";")
+	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
+endfun
+
+nnoremap <silent> <Leader>ff :exe 'Files ' . <SID>fzf_root()<CR>
+nnoremap <silent> <Leader>fc :Colors<CR>
+nnoremap <silent> <Leader>fh :History<CR>
+nnoremap <silent> <Leader>fw :Windows<CR>
+nnoremap <silent> <Leader>fb :Buffers<CR>
+nnoremap <silent> <Leader>fl :BLines<CR>
+nnoremap <silent> <Leader>ft :BTags<CR>
+nnoremap <silent> <Leader>; :Commands<CR>
+nnoremap <silent> <Leader>h :Helptags<CR>
+nnoremap <silent> <Leader>/ :execute 'Ag ' . input('Ag/')<CR>
+nnoremap <silent> <Leader>. :AgIn
+
+nnoremap <silent> K :call SearchWordWithAg()<CR>
+vnoremap <silent> K :call SearchVisualSelectionWithAg()<CR>
+nnoremap <silent> <Leader>gl :Commits<CR>
+nnoremap <silent> <Leader>ga :BCommits<CR>
+nnoremap <silent> <Leader>fT :Filetypes<CR>
+
+function! SearchWordWithAg()
+  execute 'Ag' expand('<cword>')
+endfunction
+
+function! SearchVisualSelectionWithAg() range
+  let old_reg = getreg('"')
+  let old_regtype = getregtype('"')
+  let old_clipboard = &clipboard
+  set clipboard&
+  normal! ""gvy
+  let selection = getreg('"')
+  call setreg('"', old_reg, old_regtype)
+  let &clipboard = old_clipboard
+  execute 'Ag' selection
+endfunction
+
+function! SearchWithAgInDirectory(...)
+  call fzf#vim#ag(join(a:000[1:], ' '), extend({'dir': a:1}, g:fzf#vim#default_layout))
+endfunction
+command! -nargs=+ -complete=dir AgIn call SearchWithAgInDirectory(<f-args>)
+" }}}
+
+" Jedi-vim {{{
+" All these mappings work only for python code:
+let g:jedi#completions_command = "<C-N>"
+let g:jedi#goto_command = '<Leader>d'
+let g:jedi#usages_command = '<Leader>o'
+let g:jedi#goto_assignments_command = '<Leader>a'
+let g:jedi#popup_on_dot = 0
+" Go to definition in new tab
+nmap <Leader>D :tab split<CR>:call jedi#goto()<CR>
+" }}}
+
+" vim-mucomplete {{{
+set noshowmode shortmess+=c
+set noinfercase
+set completeopt-=preview
+set completeopt+=menuone,noinsert,noselect
+set belloff+=ctrlg
+" The following line assumes `brew install llvm` in macOS
+let g:clang_library_path = '/usr/local/opt/llvm/lib/libclang.dylib'
+let g:clang_user_options = '-std=c++14'
+let g:clang_complete_auto = 1
+let g:mucomplete#enable_auto_at_startup = 1
+" }}}
+
+" }}}

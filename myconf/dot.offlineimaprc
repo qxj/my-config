@@ -1,0 +1,56 @@
+# -*- mode: conf -*-
+
+# Just run offlineimap once after you login without setup crontab, it
+# will keep connection and sync with remote IMAP periodically (by
+# setting: autorefresh=5). When offlineimap doesn't work well, run below
+# command for troubleshooting:
+#
+# $ offlineimap -1 -d ALL
+#
+
+[general]
+ui = Basic
+accounts = GMail
+maxsyncaccounts = 3
+socktimeout = 30
+
+[Account GMail]
+localrepository = Local
+remoterepository = Remote
+# let offlineimap quick or full synchronization every 5 minutes.
+autorefresh = 5
+quick = 10
+# maxsize = 2000000
+maxage = 3
+
+[Repository Local]
+### forward message to local maildir
+# type = Maildir
+# localfolders = ~/Gmail
+
+### forwoard messages to local imapd service.
+# firstly, install dovecot imapd:
+#     $ sudo apt-get install dovecot-imapd
+# then setup /etc/dovecot.conf:
+#     mail_location = maildir:%h/Maildir
+type = IMAP
+remotehost = localhost
+port = 143
+remoteuser = jqian
+remotepass = login_password
+
+[Repository Remote]
+type = Gmail
+remoteuser = junist@gmail.com
+remotepass = gmail_password
+maxconnections = 2
+readonly = False
+
+# Setting realdelete = yes will Really Delete email from the server.
+# Otherwise "deleting" a message will just remove any labels and retain
+# the message in the All Mail folder.
+realdelete = no
+
+idlefolders = ['INBOX']
+folderfilter = lambda folder: folder not in ['[Gmail]/All Mail', '[Gmail]/Trash']
+#nametrans = lambda folder: re.sub ('.*Spam$', 'spam', re.sub('.*Drafts$', 'drafts', re.sub('.*Sent Mail$', 'sent', re.sub('.*Starred$', 'flagged', re.sub('.*Trash$', 'trash', re.sub('.*All Mail$', 'archive', folder))))))

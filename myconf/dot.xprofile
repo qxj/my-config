@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# enable middle button of ibm portable keyboard 8845
+xinput list | sed -ne 's/^[^ ][^V].*id=\([0-9]*\).*/\1/p' | while read id
+do
+        case `xinput list-props $id` in
+        *"Middle Button Emulation"*)
+                xinput set-int-prop $id "Evdev Wheel Emulation" 8 1
+                xinput set-int-prop $id "Evdev Wheel Emulation Button" 8 2
+                xinput set-int-prop $id "Evdev Wheel Emulation Timeout" 8 200
+                xinput set-int-prop $id "Evdev Wheel Emulation Axes" 8 6 7 4 5
+                xinput set-int-prop $id "Evdev Middle Button Emulation" 8 0
+                ;;
+        esac
+done
+
+# disable middle button
+# xmodmap -e "pointer = 1 9 3 4 5 6 7 8 2"
+
+## adjust monitor resolution
+# cvt 1920 1050 60.00
+xrandr --newmode  "1920x1050_60.00"  167.25  1920 2040 2240 2560  1050 1053 1063 1089 -hsync +vsync
+xrandr --addmode VGA1 "1920x1050_60.00"
+xrandr --output VGA1 --mode "1920x1050_60.00"

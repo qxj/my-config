@@ -1,0 +1,36 @@
+# -*- mode: sh -*-
+
+# Enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+else
+	alias ls='ls -G'
+fi
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Easier navigation: .., ..., ~ and -
+alias ..="cd .."
+alias ...="cd ../.."
+alias ~="cd ~" # `cd` is probably faster to type though
+alias -- -="cd -"
+
+alias vi=vim
+
+# Hadoop aliases
+alias hcat="hadoop fs -cat"
+alias hcp="hadoop fs -cp"
+alias hget="hadoop fs -get"
+alias hls="hadoop fs -ls"
+alias hmkdir="hadoop fs -mkdir"
+alias hmv="hadoop fs -mv"
+alias hput="hadoop fs -put"
+alias hrm="hadoop fs -rm"
+alias hrmr="hadoop fs -rm -r"
+alias htail="hadoop fs -tail"

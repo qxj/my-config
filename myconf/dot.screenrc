@@ -1,0 +1,52 @@
+# skip the startup message
+startup_message off
+
+# encoding
+defutf8 on
+
+# go to home dir
+# chdir
+
+# Automatically detach on hangup
+autodetach on
+
+# Change default scrollback value for new windows
+defscrollback 5000
+
+# start with visual bell as default
+vbell on
+vbell_msg "bell on %t (%n)"
+
+# The vt100 description does not mention "dl". *sigh*
+termcapinfo vt100 dl=5\E[M
+
+termcapinfo xterm*|xterms|xs|rxvt ti@:te@
+altscreen on
+
+# Enable 256 color terminal
+attrcolor b ".I"
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+defbce "on"
+
+# Monitor windows, funcy feature
+defmonitor on
+activity ""
+
+defhstatus "^Et | $USER@^EH"
+
+# look and feel
+caption always
+#caption string "%{+b rk}%H%{gk} |%c %{yk}%d.%m.%Y | %72=Load: %l %{wk}"
+caption string " %-Lw%{= d.}%50>%n%f %t%{-}%+Lw%< %=|%{+b rk} %H %{gk}%0c:%s "
+
+#hardstatus alwayslastline
+#hardstatus string "%?%{yk}%-Lw%?%{wb}%n*%f %t%?(%u)%?%?%{yk}%+Lw%?"
+hardstatus string "%?[%H] %n%f %t%?"
+
+shelltitle '$ |sh'
+
+#  Toggle 'fullscreen' or not.
+bind f eval "caption splitonly" "hardstatus ignore"
+bind F eval "caption always"    "hardstatus ignore"
+
+escape ^Zz

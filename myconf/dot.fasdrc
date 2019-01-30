@@ -1,0 +1,7 @@
+_FASD_MAX=5000
+_FASD_BACKENDS="native spotlight viminfo"
+_FASD_SINK="$HOME/.fasd.log"
+
+local shell; for shell in dash mksh zsh; do
+  _FASD_SHELL="$(command -v $shell)" && break
+done

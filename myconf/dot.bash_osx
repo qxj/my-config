@@ -1,0 +1,24 @@
+# -*- mode: sh -*-
+
+# sdcv
+alias sdcv="sdcv -01"
+
+# PATH
+export DYLD_LIBRARY_PATH=/usr/local/opt/llvm/lib
+#export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/opt/llvm/lib
+
+# autojump
+test -f "/usr/local/etc/autojump.bash" && . /usr/local/etc/autojump.bash
+
+# python path
+export PYTHONPATH=$PYTHONPATH:/Users/jqian/works/icarsclub/cli/pytools/common
+
+# MUST be in the end, works well with iTerm2
+if [[ -z "$TMUX" ]]; then
+    ID="`tmux ls | grep -vm1 attached | cut -d: -f1`" # get the id of a deattached session
+    if [[ -z "$ID" ]] ;then # if not available create a new one
+        tmux new-session
+    else
+        tmux attach-session -t "$ID" # if available attach to it
+    fi
+fi

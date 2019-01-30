@@ -1,0 +1,7 @@
+# -*- conf -*-
+
+set hive.cli.print.current.db=true; # 在cli里显示当前db名
+set hive.cli.print.header=true      # 输出表头
+set hive.exec.mode.local.auto=true; # 启动本地模式，尽量不启动map reduce
+set hive.auto.convert.join=true;    # 启动map-side JOIN
+set hive.mapjoin.smalltable.filesize=25000000; # map-side JOIN表需要小于25M

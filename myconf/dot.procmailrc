@@ -1,0 +1,35 @@
+# -*- conf -*-
+
+################################################################
+### mbox
+# PATH     = /bin:/usr/bin:/usr/local/bin
+# MAILDIR  = $HOME/Mail
+# DEFAULT  = $MAILDIR/inbox/
+# LOCKFILE = $MAILDIR/.lock
+# LOGFILE  = $HOME/procmail.log
+# VERBOSE  = off
+
+# :0:
+# * (^To|^Cc):jun@pku.org.cn
+# pku.spool
+
+# :0:
+# inbox.spool
+
+
+################################################################
+### maildir
+PATH     = /bin:/usr/bin:/usr/local/bin
+MAILDIR  = $HOME/Mail
+DEFAULT  = $MAILDIR/inbox/
+LOCKFILE = $MAILDIR/.lock
+LOGFILE  = $HOME/procmail.log
+VERBOSE  = off
+
+:0:
+* (^To|^Cc):jun@pku.org.cn
+$MAILDIR/pku/
+
+:0:
+${DEFAULT}
+
