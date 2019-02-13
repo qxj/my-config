@@ -1,0 +1,13 @@
+#!/bin/bash
+
+sbt_ver=1.1.2
+
+dir=$(dirname $0)
+sbt_dir=$dir/sbt-$sbt_ver
+sbt_url=https://github.com/sbt/sbt/releases/download/v$sbt_ver/sbt-$sbt_ver.zip
+if [[ ! -d $sbt_dir ]]; then
+  curl -OL $sbt_url -o sbt-$sbt_ver.zip
+  unzip sbt-$sbt_ver.zip -d /tmp/sbt-$sbt_ver
+  mv /tmp/sbt-$sbt_ver/sbt $sbt_dir && rmdir /tmp/sbt-$sbt_ver
+fi
+bash $sbt_dir/bin/sbt -Dsbt.override.build.repos=true -v $@

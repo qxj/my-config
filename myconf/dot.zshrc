@@ -114,6 +114,7 @@ export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
 if which fasd >/dev/null; then
     eval "$(fasd --init auto)"
+    bindkey '^X^A' fasd-complete
 fi
 
 # Java environment
