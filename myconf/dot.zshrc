@@ -11,6 +11,8 @@ bindkey -e                      # Use emacs key bindings
 zstyle ':completion:*' menu select
 zstyle ':completion:*' completer _complete
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' '+l:|=* r:|=*'
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':conda_zsh_completion:*' use-groups true
 
 # stop backward-kill-word on directory delimiter
 # WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
@@ -77,7 +79,7 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
 zplug "zsh-users/zsh-completions"
 #zplug "Vifon/deer", use:deer
-zplug "supercrabtree/k"
+zplug "esc/conda-zsh-completion"
 
 if ! zplug check --verbose; then
     printf "Install? [y/N]: "
@@ -132,6 +134,10 @@ if which pyenv >/dev/null; then
   if which pyenv-virtualenv-init >/dev/null; then
     eval "$(pyenv virtualenv-init -)"
   fi
+fi
+
+if [ -f $HOME/miniconda3/bin/python ]; then
+  export PATH=$HOME/miniconda3/bin:$PATH
 fi
 
 if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
