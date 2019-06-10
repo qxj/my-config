@@ -98,8 +98,6 @@ zplug load
 PATH=$HOME/.local/bin:$PATH
 PATH=$PATH:/usr/local/bin
 PATH=$PATH:/usr/local/sbin
-PATH=$PATH:/usr/local/texlive/2016basic/bin/x86_64-darwin
-PATH=$PATH:~/anaconda2/bin
 export PATH
 
 export EDITOR=vim
@@ -136,9 +134,9 @@ if which pyenv >/dev/null; then
   fi
 fi
 
-if [ -f $HOME/miniconda3/bin/python ]; then
-  export PATH=$HOME/miniconda3/bin:$PATH
-fi
+#if [ -f $HOME/miniconda3/bin/python ]; then
+#  export PATH=$HOME/miniconda3/bin:$PATH
+#fi
 
 if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
   export WORKON_HOME=$HOME/.virtualenvs
