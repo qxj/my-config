@@ -114,12 +114,14 @@ export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
 export PS_FORMAT="pid,ppid,user,pri,ni,vsz,rss,pcpu,pmem,tty,stat,args"
 
-export FD_OPTIONS="--follow --exclude .git -exclude node_modules"
+export FD_OPTIONS="--follow --exclude .git --exclude node_modules"
 export BAT_PAGER="less -R"
 
 # Java environment
-export JAVA_HOME=`/usr/libexec/java_home`
-export JAVAFX_HOME=$JAVA_HOME/jre/lib
+if [[ $OSTYPE == *darwin* ]]; then
+  export JAVA_HOME=`/usr/libexec/java_home`
+  export JAVAFX_HOME=$JAVA_HOME/jre/lib
+fi
 if which jenv >/dev/null; then
   export JENV_ROOT=/usr/local/var/jenv
   #eval "$(jenv init -)"
@@ -181,7 +183,7 @@ fi
 alias v='f -e vim'
 alias o='a -e open'
 
-alias ls='ls -G'
+alias ls='ls -G --color'
 alias l='k --no-vcs'
 
 GREP_EXCLUDE_DIR="{.git,vendor}"

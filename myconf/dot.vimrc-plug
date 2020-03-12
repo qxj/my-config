@@ -475,8 +475,8 @@ Plug 'kshenoy/vim-signature' "书签可视化的插件
 Plug 'majutsushi/tagbar' "taglist的增强版，查看标签，依赖于ctags
 Plug 'scrooloose/nerdcommenter' "多行注释，leader键+cc生成, leader+cu删除注释
 Plug 'lifepillar/vim-mucomplete'
-"Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug '/usr/local/opt/fzf' " installed by homebrew
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+"Plug '/usr/local/opt/fzf' " installed by homebrew
 Plug 'junegunn/fzf.vim'
 Plug 'easymotion/vim-easymotion' "快速跳转，按两下leader键和s组合
 Plug 'vim-airline/vim-airline'
@@ -549,7 +549,7 @@ let g:rooter_patterns = ['package.json', '.git/', '.hg/', '.bzr/', '.svn/']
 " }}}
 
 " FZF {{{
-let g:fzf_nvim_statusline = 0 " disable statusline overwriting
+"let g:fzf_nvim_statusline = 0 " disable statusline overwriting
 let g:fzf_layout = { 'window': 'enew' }
 let g:fzf_buffers_jump = 1
 let g:fzf_command_prefix = 'FZF'
