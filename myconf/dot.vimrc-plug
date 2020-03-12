@@ -155,6 +155,19 @@ autocmd vimrc VimEnter,Colorscheme * match Whitespace /[^ \t]\s\+$/
 autocmd vimrc BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &ft != 'gitcommit' | exe "normal g'\"" | endif
 " }}}
 
+" netrw
+" {{{
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 25
+" augroup ProjectDrawer
+"   autocmd!
+"   autocmd VimEnter * :Vexplore
+" augroup END
+" }}}
+
 " Text Formatting
 " {{{
 set formatoptions+=j
@@ -182,6 +195,9 @@ let b:match_ignorecase = 1
 set diffopt+=vertical,iwhite
 
 " folding
+" zR
+" zM
+" za
 set foldenable foldmethod=marker
 autocmd vimrc Syntax * set foldmethod=marker
 set nofoldenable  " close folding
@@ -226,7 +242,8 @@ endfunction " }}}
 " Keybindings
 " {{{
 
-let mapleader="\\"
+let g:mapleader = "\<Space>"
+let g:maplocalleader = ","
 
 vnoremap <Leader>y "Copy selected text to system clipboard
 nmap <Leader>p "Paste system clipboard to vim
@@ -534,13 +551,15 @@ let g:rooter_patterns = ['package.json', '.git/', '.hg/', '.bzr/', '.svn/']
 " FZF {{{
 let g:fzf_nvim_statusline = 0 " disable statusline overwriting
 let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_buffers_jump = 1
+let g:fzf_command_prefix = 'FZF'
 
 " Mapping selecting mappings
 nmap <Leader><tab> <plug>(fzf-maps-n)
 xmap <Leader><tab> <plug>(fzf-maps-x)
 omap <Leader><tab> <plug>(fzf-maps-o)
 
-" Insert mode completion
+" File path completion in Insert mode using fzf
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-j> <plug>(fzf-complete-file-ag)
@@ -551,26 +570,26 @@ fun! s:fzf_root()
 	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
 endfun
 
-nnoremap <silent> <Leader>ff :exe 'Files ' . <SID>fzf_root()<CR>
-nnoremap <silent> <Leader>fc :Colors<CR>
-nnoremap <silent> <Leader>fh :History<CR>
-nnoremap <silent> <Leader>fw :Windows<CR>
-nnoremap <silent> <Leader>fb :Buffers<CR>
-nnoremap <silent> <Leader>fl :BLines<CR>
-nnoremap <silent> <Leader>ft :BTags<CR>
-nnoremap <silent> <Leader>; :Commands<CR>
-nnoremap <silent> <Leader>h :Helptags<CR>
-nnoremap <silent> <Leader>/ :execute 'Ag ' . input('Ag/')<CR>
+nnoremap <silent> <Leader>ff :exe 'FZFFiles ' . <SID>fzf_root()<CR>
+nnoremap <silent> <Leader>fc :FZFColors<CR>
+nnoremap <silent> <Leader>fh :FZFHistory<CR>
+nnoremap <silent> <Leader>fw :FZFWindows<CR>
+nnoremap <silent> <Leader>fb :FZFBuffers<CR>
+nnoremap <silent> <Leader>fl :FZFBLines<CR>
+nnoremap <silent> <Leader>ft :FZFBTags<CR>
+nnoremap <silent> <Leader>; :FZFCommands<CR>
+nnoremap <silent> <Leader>h :FZFHelptags<CR>
+nnoremap <silent> <Leader>/ :execute 'FZFAg ' . input('FZFAg/')<CR>
 nnoremap <silent> <Leader>. :AgIn
 
 nnoremap <silent> K :call SearchWordWithAg()<CR>
 vnoremap <silent> K :call SearchVisualSelectionWithAg()<CR>
-nnoremap <silent> <Leader>gl :Commits<CR>
-nnoremap <silent> <Leader>ga :BCommits<CR>
-nnoremap <silent> <Leader>fT :Filetypes<CR>
+nnoremap <silent> <Leader>gl :FZFCommits<CR>
+nnoremap <silent> <Leader>ga :FZFBCommits<CR>
+nnoremap <silent> <Leader>fT :FZFFiletypes<CR>
 
 function! SearchWordWithAg()
-  execute 'Ag' expand('<cword>')
+  execute 'FZFAg' expand('<cword>')
 endfunction
 
 function! SearchVisualSelectionWithAg() range
@@ -582,7 +601,7 @@ function! SearchVisualSelectionWithAg() range
   let selection = getreg('"')
   call setreg('"', old_reg, old_regtype)
   let &clipboard = old_clipboard
-  execute 'Ag' selection
+  execute 'FZFAg' selection
 endfunction
 
 function! SearchWithAgInDirectory(...)

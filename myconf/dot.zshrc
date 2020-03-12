@@ -112,10 +112,10 @@ export MANPAGER="less -X"
 # homebrew bottles ustc mirror
 export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.ustc.edu.cn/homebrew-bottles
 
-if which fasd >/dev/null; then
-    eval "$(fasd --init auto)"
-    bindkey '^X^A' fasd-complete
-fi
+export PS_FORMAT="pid,ppid,user,pri,ni,vsz,rss,pcpu,pmem,tty,stat,args"
+
+export FD_OPTIONS="--follow --exclude .git -exclude node_modules"
+export BAT_PAGER="less -R"
 
 # Java environment
 export JAVA_HOME=`/usr/libexec/java_home`
@@ -143,15 +143,24 @@ if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
   source /usr/local/bin/virtualenvwrapper_lazy.sh
 fi
 
-# Support fzf
+# quick access to files and directories
+if which fasd >/dev/null; then
+    eval "$(fasd --init auto)"
+    bindkey '^X^A' fasd-complete
+fi
+
+# command-line fuzzy finder
 if [ -f ~/.fzf.zsh ]; then
     source ~/.fzf.zsh
-    export FZF_DEFAULT_OPTS='--height 40% --reverse --border'
-    export FZF_DEFAULT_COMMAND='ag -l -g ""'
-    export FZF_DEFAULT_OPTS='--multi'
+    export FZF_DEFAULT_OPTS="--height 40% --reverse --border --no-mouse -1 --multi --inline-info --preview='[[ \$(file --mime {}) =~ binary ]] && echo {} is a binary file || (bat --style=numbers --color=always {} || cat {} 2>/dev/null | head -300' --preview-window='right:hidden:wrap' --bind='f3:execute(bat --style=numbers {} || less -f {}),f2:toggle-preview,ctrl-d:half-page-down,ctrl-u:half-page-up,ctrl-a:select-all+accept,ctrl-y:execute-silent(echo {+} | pbcopy)'"
+    # Use `git ls-files` inside git repo, otherwise ..
+    #export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard | ag -l -g ''"
+    export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard | fd --type f --type l $FD_OPTIONS"
+    export FZF_CTRL_T_COMMAND="fd $FD_OPTIONS"
+    export FZF_ALT_C_COMMAND="fd --type d $FD_OPTIONS"
     bindkey '^R' fzf-history-widget
-    bindkey '^X^T' fzf-file-widget
-    bindkey '^X^Q' fzf-cd-widget
+    bindkey '^X^T' fzf-file-widget # CTRL-T
+    bindkey '^X^Q' fzf-cd-widget   # ALT-C
     # Restore CTRL-T, ALT-C
     bindkey '^T' transpose-chars
     bindkey '^[c' capitalize-word

@@ -50,7 +50,8 @@
     # Undo a `git push`
     undopush = push -f origin HEAD^:master
     # discard uncommited content
-    revert = checkout HEAD
+  revert = checkout HEAD
+  ls = ls-tree --name-only -r
 
     ###
     ### Useful Commands
