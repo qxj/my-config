@@ -184,7 +184,7 @@ fi
 alias v='f -e vim'
 alias o='a -e open'
 
-alias ls='ls -G --color'
+[[ $OSTYPE == *darwin* ]] && alias ls='ls -G' || alias ls='ls --color'
 alias l='k --no-vcs'
 
 GREP_EXCLUDE_DIR="{.git,vendor}"
