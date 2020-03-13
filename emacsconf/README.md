@@ -46,9 +46,6 @@ C-x r w, C-x r j
 ### Repeat last command
 C-x z
 
-### Run a shell command and insert result into current buffer
-C-u M-!
-
 ### Send a region to a shell command
 - M-| => M-x shell-command-on-region
 - C-u M-| run and replace the region

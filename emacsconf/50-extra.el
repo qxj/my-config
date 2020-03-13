@@ -289,6 +289,7 @@
 (use-package markdown-mode
   :commands (markdown-mode)
   :config
+  (setq markdown-command "pandoc")
   ;; override markdown's key binding
   (bind-keys*
    :map markdown-mode-map

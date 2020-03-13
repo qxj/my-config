@@ -437,6 +437,14 @@ Example:
         company-minimum-prefix-length 2
         company-tooltip-flip-when-above t)
 
+  ;; Use the tab-and-go frontend.
+  ;; Allows TAB to select and complete at the same time.
+  (company-tng-configure-default)
+  (setq company-frontends
+        '(company-tng-frontend
+          company-pseudo-tooltip-frontend
+          company-echo-metadata-frontend))
+
   (setq company-global-modes
         '(not magit-status-mode git-commit-mode help-mode Info-mode
               view-mode makefile-mode makefile-gmake-mode Custom-mode
@@ -452,6 +460,8 @@ Example:
                (if (equal major-mode "org")       ;remove any candidate which is longer than 15 in org-mode
                    (>= (length c) 15)))))
         company-transformers)
+
+  (use-package company-tabnine :ensure t)
   )
 
 (use-package yasnippet
