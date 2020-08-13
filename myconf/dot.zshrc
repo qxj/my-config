@@ -120,7 +120,7 @@ export BAT_PAGER="less -R"
 
 # Java environment
 if [[ $OSTYPE == *darwin* ]]; then
-  export JAVA_HOME=`/usr/libexec/java_home`
+  export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
   export JAVAFX_HOME=$JAVA_HOME/jre/lib
 fi
 if which jenv >/dev/null; then
