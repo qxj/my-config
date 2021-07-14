@@ -236,6 +236,8 @@ Example:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; third-party packages
 
+(use-package diminish :ensure t)        ;use-package :diminish feature
+
 (use-package ivy
   :disabled
   :diminish ivy-mode
@@ -370,8 +372,8 @@ Example:
     )
 
   (use-package helm-gtags
-    :after c-mode
-    :if (executable-find "gtags")
+    ;; :after c-mode
+    ;; :if (executable-find "gtags")
     :diminish (helm-gtags-mode . "hG")
     :bind (:map helm-gtags-mode-map
                 ("M-." . helm-gtags-find-tag)
@@ -383,11 +385,14 @@ Example:
                 ("C-c i" . helm-gtags-parse-file)  ;replace imenu
                 ("C-c <" . helm-gtags-previous-history)
                 ("C-c >" . helm-gtags-next-history))
+    ;; :hook (c-mode c++-mode)
+    :commands helm-gtags-mode
+    :init
+    (add-hook 'c-mode-hook #'helm-gtags-mode)
+    (add-hook 'c++-mode-hook #'helm-gtags-mode)
     :config
     (setq helm-gtags-auto-update t
-          helm-gtags-use-input-at-cursor t)
-    (add-hook 'c-mode-hook #'helm-gtags-mode)
-    (add-hook 'c++-mode-hook #'helm-gtags-mode))
+          helm-gtags-use-input-at-cursor t))
 
   (use-package helm-c-yasnippet
     :after yasnippet
@@ -470,12 +475,11 @@ Example:
   :ensure t
   :defer 3
   :diminish yas-minor-mode
-  ;; :init
+  :init
   ;; (with-eval-after-load 'yasnippet
   ;;   (setq yas-snippet-dirs (remq 'yas-installed-snippets-dir yas-snippet-dirs)))
-  :config
   (add-hook 'prog-mode-hook 'yas-minor-mode-on) ; For emacs24+, replace `yas-global-mode'
-
+  :config
   (setq yas-expand-only-for-last-commands nil
         yas-key-syntaxes '("w_" "w_." "^ ")
         yas-wrap-around-region t
@@ -537,7 +541,7 @@ Example:
   ("C-x t s" . multi-term-dedicated-select)
   ("C-x t g" . multi-term-dedicated-toggle)
   :config
-  (setq multi-term-program "/bin/bash")
+  ;; (setq multi-term-program "/bin/zsh")
   (setq multi-term-dedicated-window-height 10
         multi-term-dedicated-max-window-height 10)
 
