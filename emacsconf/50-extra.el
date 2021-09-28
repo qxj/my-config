@@ -343,6 +343,7 @@ MathJax.Hub.Config({
 (use-package xkcd)
 
 (use-package golden-ratio
+  :disabled
   :diminish golden-ratio-mode
   :config
   (golden-ratio-mode 1)

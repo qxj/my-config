@@ -108,7 +108,7 @@ Example:
 ;; A saner ediff
 (setq diff-switches "-ubB"
       ediff-diff-options "-w"
-      ediff-split-window-function 'split-window-horizontally
+      ;; ediff-split-window-function 'split-window-horizontally
       ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; Better UX
 (setq x-select-enable-clipboard t
