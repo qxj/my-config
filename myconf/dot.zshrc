@@ -52,7 +52,7 @@ setopt share_history
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
 }
 
-source ~/.zplug/init.zsh
+source $HOME/.zplug/init.zsh
 
 #zplug "zsh-users/zsh-autosuggestions", defer:2, use:"*.zsh", \
 #  hook-load: "ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=cyan,bold' \
