@@ -66,7 +66,7 @@
                       (my/ismac "PingFang SC")
                       (t "WenQuanYi Micro Hei Mono")))
        (pixel-size (if (> (x-display-pixel-width) 1280)
-                       ":pixelsize=13" ":pixelsize=12"))
+                       ":pixelsize=12" ":pixelsize=11"))
        (frame-width (if (> (x-display-pixel-width) 1280) 90 80)))
    (setq default-frame-alist
          `((width . ,frame-width)
