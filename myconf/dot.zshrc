@@ -143,6 +143,7 @@ fi
 
 if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
   export WORKON_HOME=$HOME/.virtualenvs
+  export VIRTUALENVWRAPPER_PYTHON=python3
   source /usr/local/bin/virtualenvwrapper_lazy.sh
 fi
 

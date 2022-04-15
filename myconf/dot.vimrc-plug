@@ -155,7 +155,7 @@ autocmd vimrc VimEnter,Colorscheme * match Whitespace /[^ \t]\s\+$/
 autocmd vimrc BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &ft != 'gitcommit' | exe "normal g'\"" | endif
 " }}}
 
-" netrw
+" netrw, shipped filebrowser
 " {{{
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
@@ -192,7 +192,10 @@ runtime macros/matchit.vim
 let b:match_ignorecase = 1
 
 " diffing
-set diffopt+=vertical,iwhite
+if &diff
+  set diffopt-=internal
+  set diffopt+=vertical,iwhite
+endif
 
 " folding
 " zR
@@ -267,8 +270,8 @@ ca w!! w !sudo tee "%"
 " tab navigation mappings
 map tn :tabn<CR>
 map tp :tabp<CR>
-map tm :tabm
-map tt :tabnew
+map tm :tabm<CR>
+map tt :tabnew<CR>
 map ts :tab split<CR>
 map <C-S-Right> :tabn<CR>
 imap <C-S-Right> <ESC>:tabn<CR>
@@ -488,6 +491,7 @@ Plug 'airblade/vim-rooter'
 Plug 'thaerkh/vim-workspace'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'moll/vim-bbye'
 
 call plug#end()
 
@@ -542,7 +546,7 @@ let g:SignatureMap = {
 " rooter {{{
 let g:rooter_manual_only = 1
 let g:rooter_change_directory_for_non_project_files = 0
-let g:rooter_use_lcd = 1
+let g:rooter_cd_cmd="lcd"
 let g:rooter_silent_chdir = 1
 let g:rooter_patterns = ['package.json', '.git/', '.hg/', '.bzr/', '.svn/']
 
@@ -563,7 +567,6 @@ omap <Leader><tab> <plug>(fzf-maps-o)
 " File path completion in Insert mode using fzf
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
-imap <c-x><c-j> <plug>(fzf-complete-file-ag)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
 fun! s:fzf_root()
@@ -571,22 +574,22 @@ fun! s:fzf_root()
 	return fnamemodify(substitute(path, ".git", "", ""), ":p:h")
 endfun
 
+" Fzf commands, https://github.com/junegunn/fzf.vim#commands
 nnoremap <silent> <Leader>ff :exe 'FZFFiles ' . <SID>fzf_root()<CR>
-nnoremap <silent> <Leader>fc :FZFColors<CR>
 nnoremap <silent> <Leader>fh :FZFHistory<CR>
 nnoremap <silent> <Leader>fw :FZFWindows<CR>
 nnoremap <silent> <Leader>fb :FZFBuffers<CR>
 nnoremap <silent> <Leader>fl :FZFBLines<CR>
 nnoremap <silent> <Leader>ft :FZFBTags<CR>
-nnoremap <silent> <Leader>; :FZFCommands<CR>
+nnoremap <silent> <Leader>: :FZFCommands<CR>
 nnoremap <silent> <Leader>h :FZFHelptags<CR>
 nnoremap <silent> <Leader>/ :execute 'FZFAg ' . input('FZFAg/')<CR>
-nnoremap <silent> <Leader>. :AgIn
-
-nnoremap <silent> K :call SearchWordWithAg()<CR>
-vnoremap <silent> K :call SearchVisualSelectionWithAg()<CR>
+vnoremap <silent> <Leader>k :call SearchWordWithAg()<CR>
+vnoremap <silent> <Leader>K :call SearchVisualSelectionWithAg()<CR>
 nnoremap <silent> <Leader>gl :FZFCommits<CR>
 nnoremap <silent> <Leader>ga :FZFBCommits<CR>
+
+nnoremap <silent> <Leader>fc :FZFColors<CR>
 nnoremap <silent> <Leader>fT :FZFFiletypes<CR>
 
 function! SearchWordWithAg()
