@@ -158,3 +158,8 @@ email = junist@gmail.com
 [http]
 postBuffer = 2M
 # proxy = 127.0.0.1:1080
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
