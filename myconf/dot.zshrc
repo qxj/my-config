@@ -19,9 +19,6 @@ zstyle ':conda_zsh_completion:*' use-groups true
 autoload -U select-word-style
 select-word-style bash
 
-autoload -U compinit && compinit
-zmodload -i zsh/complist
-
 unsetopt menu_complete
 unsetopt flow_control
 
@@ -46,51 +43,27 @@ setopt interactive_comments
 setopt share_history
 
 ################
-# Zplug
+# Zinit   https://www.jianshu.com/p/2e098dfecf4a
 ################
-[[ -d ~/.zplug ]] || {
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local}/zinit/zinit.git"
+[[ -d $ZINIT_HOME ]] || {
+  mkdir -p "$(dirname $ZINIT_HOME)" && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 }
+source "${ZINIT_HOME}/zinit.zsh"
 
-source $HOME/.zplug/init.zsh
 
-#zplug "zsh-users/zsh-autosuggestions", defer:2, use:"*.zsh", \
-#  hook-load: "ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=cyan,bold' \
-#              ZSH_AUTOSUGGEST_USE_ASYNC=true"
+zinit ice compile'(pure|async).zsh' pick"async.zsh" src"pure.zsh"; zinit light sindresorhus/pure
+zinit wait silent for \
+  if'which git>/dev/null' OMZP::git \
+  if'[[ $OSTYPE == *darwin* ]]' OMZP::macos \
+  light-mode esc/conda-zsh-completion \
+  light-mode zdharma/fast-syntax-highlighting
 
-# zplug "olivierverdier/zsh-git-prompt", use:zshrc.sh
-# zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf, use:"*darwin*amd64*"
-zplug "plugins/git", from:oh-my-zsh, if:"which git"
-zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "mafredri/zsh-async", defer:0
-zplug "sindresorhus/pure", use:pure.zsh, as:theme
-#zplug "bhilburn/powerlevel9k", use:powerlevel9k.zsh-theme
-POWERLEVEL9K_MODE="nerdfont-fontconfig"
-POWERLEVEL9K_PROMPT_ON_NEWLINE=true
-POWERLEVEL9K_SHORTEN_STRATEGY="truncate_middle"
-POWERLEVEL9K_SHORTEN_DIR_LENGTH=4
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon root_indicator dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status background_jobs time virtualenv)
-POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=""
-POWERLEVEL9K_MULTILINE_SECOND_PROMPT_PREFIX=" ❯ "
+#zinit ice from"gh-r" as"program"; zinit load junegunn/fzf-bin
 
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
-
-zplug "zsh-users/zsh-completions"
-#zplug "Vifon/deer", use:deer
-zplug "esc/conda-zsh-completion"
-
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
-
-zplug load
-
-# https://github.com/joshtronic/dotfiles/blob/master/zshrc
+# enable zsh autocomplete
+autoload -U compinit && compinit
+zmodload -i zsh/complist
 
 ################
 # User configuration
@@ -244,9 +217,11 @@ cdg() {
   cd "${topdir}/${1}"
 }
 
+
 ################
 # Local zsh configuration
 ################
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
