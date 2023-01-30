@@ -492,6 +492,8 @@ Plug 'thaerkh/vim-workspace'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'moll/vim-bbye'
+Plug 'scrooloose/syntastic'
+Plug 'dbeniamine/cheat.sh-vim'
 
 call plug#end()
 
