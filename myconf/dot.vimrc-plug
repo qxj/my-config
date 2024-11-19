@@ -267,6 +267,10 @@ nnoremap p p`]
 " nmap <Leader>W :w !sudo tee %<CR>
 ca w!! w !sudo tee "%"
 
+" vim-powered terminal in split window
+map <Leader>t :term ++close<cr>
+tmap <Leader>t <c-w>:term ++close<cr>
+
 " tab navigation mappings
 map tn :tabn<CR>
 map tp :tabp<CR>

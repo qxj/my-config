@@ -5,26 +5,26 @@
 
 [alias]
 # Amend the currently staged files to the latest commit
-amend = commit --amend --reuse-message=HEAD
-c = clone --recursive
-co = checkout
-ci = commit
-d = diff --patch-with-stat
-ds = diff --name-status -r #Only list modified file names
-revert = checkout HEAD # discard uncommited content
-ls = ls-tree --name-only -r
-l = log --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --no-merges
-tags = tag --list
-remotes = remote --verbose
-s = status --short #--branch
-p = !git pull && git submodule update
-pm = push origin master
+  amend = commit --amend --reuse-message=HEAD
+  c = clone --recursive
+  co = checkout
+  ci = commit
+  d = diff --patch-with-stat
+  ds = diff --name-status -r #Only list modified file names
+  revert = checkout HEAD # discard uncommited content
+  ls = ls-tree --name-only -r
+  l = log --format='%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --no-merges
+  tags = tag --list
+  remotes = remote --verbose
+  s = status --short #--branch
+  p = !git pull && git submodule update
+  pm = pull origin master
 # List contributors with number of commits
-sl = shortlog --summary --numbered
+  sl = shortlog --summary --numbered
 # Undo !DANGEROUS!
-undo = reset --hard
+  undo = reset --hard
 # Undo a `git push`
-undopush = push -f origin HEAD^:master
+  undopush = push -f origin HEAD^:master
 
 
 ###
@@ -32,40 +32,40 @@ undopush = push -f origin HEAD^:master
 ###
 
 # Get a list of your defined aliases
-aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
+  aliases = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /'
 
 # Interactive rebase with the given number of latest commits
-reb = "!r() { git rebase -i HEAD~$1; }; r"
+  reb = "!r() { git rebase -i HEAD~$1; }; r"
 
 # Remove branches that have already been merged with master, a.k.a. ‘delete merged’
-clean-branches = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+  clean-branches = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 
 # Remove the old tag with this name and tag the latest commit with it.
-remove-tag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
+  remove-tag = "!r() { git tag -d $1 && git push origin :refs/tags/$1 && git tag $1; }; r"
 
 # Pull in remote changes for the current repository and all its submodules
-pull-all = !"git pull && git submodule foreach git pull origin master"
+  pull-all = !"git pull && git submodule foreach git pull origin master"
 
 # Prune all your stale remote branches
-prune-all = !git remote | xargs -n 1 git remote prune
+  prune-all = !git remote | xargs -n 1 git remote prune
 
 # Takes the name of a person or their email address
-whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
+  whois = "!sh -c 'git log -i -1 --pretty=\"format:%an <%ae>\n\" --author=\"$1\"' -"
 # Takes a commit name
-whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+  whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
 
 # If upstream applied a slightly modified patch, and you want to see the
 # modifications, you should use the program interdiff of the patchutils
 # package. This accept two commits, typically the first coming from upstream
 # (e.g. origin/master) and the second coming from your own topic branch.
-intercommit = !sh -c 'interdiff <(git show $1) <(git show $2) | less -FRS' -
+  intercommit = !sh -c 'interdiff <(git show $1) <(git show $2) | less -FRS' -
 
 # If you use shortened hashes, sometimes you may encounter a collision. The
 # following alias prints out all commits whose hash start with given string.
-abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
+  abbr = "!sh -c 'git rev-list --all | grep ^$1 | while read commit; do git --no-pager log -n1 --pretty=format:\"%H %ci %an %s%n\" $commit; done' -"
 
-oneline ="!_() { $(test $# -eq 0 && echo xargs -L1) git log --no-walk --decorate --oneline \"$@\"; }; _"
-tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
+  oneline ="!_() { $(test $# -eq 0 && echo xargs -L1) git log --no-walk --decorate --oneline \"$@\"; }; _"
+  tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"$t\"; then echo $t; _ \"$@\" ^$t; fi; }; _"
 
 # Digest from https://git.wiki.kernel.org/index.php/Aliases
 #
@@ -78,14 +78,14 @@ tips = "!_() { t=$(git rev-list --no-merges --max-count=1 \"$@\"); if test -n \"
 # $ git add-unmerged
 # $ git commit  # or git rebase --continue or whatever
 #
-edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; vim `f`"
-add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
+  edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; vim `f`"
+  add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
 
 # graph
-graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
+  graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
 
 # squash the least N commits
-squash = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\"; };f"
+  squash = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --format=%B --reverse HEAD..HEAD@{1})\"; };f"
 
 [apply]
 # Detect whitespace errors when applying a patch (Disabled, it causes python
@@ -93,73 +93,73 @@ squash = "!f(){ git reset --soft HEAD~${1} && git commit --edit -m\"$(git log --
 # whitespace = fix
 
 [branch]
-autosetuprebase = always
+  autosetuprebase = always
 
 # Use `origin` as the default remote on the `master` branch in all cases
 [branch "master"]
-remote = origin
-merge = refs/heads/master
+  remote = origin
+  merge = refs/heads/master
 
 [core]
 # Use custom `.gitignore` and `.gitattributes`
-attributesfile = ~/.gitattributes
-excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+  excludesfile = ~/.gitignore
 # Make `git rebase` safer on OS X
-trustctime = false
+  trustctime = false
 # Treat spaces before tabs, lines that are indented with 8 or more spaces,
 # and all kinds of trailing whitespace as an error
-whitespace = space-before-tab,indent-with-non-tab,trailing-space
+  whitespace = space-before-tab,indent-with-non-tab,trailing-space
 
 [color]
 # Use colors in Git commands that are capable of colored output when
 # outputting to the terminal
-ui = auto
+  ui = auto
 [color "branch"]
-current = yellow reverse
-local = yellow
-remote = green
+  current = yellow reverse
+  local = yellow
+  remote = green
 [color "diff"]
-meta = yellow bold
-frag = magenta bold
-old = red bold
-new = green bold
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
 [color "status"]
-added = yellow
-changed = green
-untracked = cyan
+  added = yellow
+  changed = green
+  untracked = cyan
 [merge]
 # Include summaries of merged commits in newly created merge commit messages
-log = true
+  log = true
 [pull]
-rebase = true
+  rebase = true
 [push]
 # Git simple branching method only your current branch will be pushed.
 # default = simple            # git 1.8+ required
 
 # URL shorthands
 [url "git@github.com:"]
-insteadOf = "gh:"
-pushInsteadOf = "github:"
-pushInsteadOf = "git://github.com/"
+  insteadOf = "gh:"
+  pushInsteadOf = "github:"
+  pushInsteadOf = "git://github.com/"
 [url "git://github.com/"]
-insteadOf = "github:"
+  insteadOf = "github:"
 [url "git@gist.github.com:"]
-insteadOf = "gst:"
-pushInsteadOf = "gist:"
-pushInsteadOf = "git://gist.github.com/"
+  insteadOf = "gst:"
+  pushInsteadOf = "gist:"
+  pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
-insteadOf = "gist:"
+  insteadOf = "gist:"
 [url "git://bitbucket.org:"]
-insteadOf = "bb:"
+  insteadOf = "bb:"
 
 [user]
-name = Julian Qian
-email = junist@gmail.com
+  name = Julian
+  email = jun.ist@gmail.com
 [http]
-postBuffer = 2M
+  postBuffer = 2M
 # proxy = 127.0.0.1:1080
 [filter "lfs"]
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process

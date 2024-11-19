@@ -69,8 +69,8 @@ zmodload -i zsh/complist
 # User configuration
 ################
 PATH=$HOME/.local/bin:$PATH
-PATH=$PATH:/usr/local/bin
-PATH=$PATH:/usr/local/sbin
+PATH=/usr/local/bin:$PATH
+PATH=/usr/local/sbin:$PATH
 export PATH
 
 export EDITOR=vim
