@@ -279,7 +279,8 @@ Example:
   :ensure t
   :diminish helm-mode
   ;; :bind-keymap* ("C-c h" . helm-command-prefix)
-  :bind (("M-x" . helm-M-x)
+  :bind (
+         ("M-x" . helm-M-x)
          ("M-y" . helm-show-kill-ring)
          ("C-c i" . helm-semantic-or-imenu)
          ("C-c r" . helm-recentf)
@@ -307,12 +308,13 @@ Example:
          ("C-w" . helm-find-files-up-one-level)
          :map helm-read-file-map
          ("C-w" . helm-find-files-up-one-level))
-  :init
-  (require 'helm-config)
+  ;; :init
+  ;; (require 'helm-config)
+  :config
   (helm-mode t)
   (helm-adaptive-mode t)
   (ido-mode -1)          ; Turn off ido mode in case I enabled it accidentally
-  :config
+
   (unbind-key "C-l" helm-read-file-map)
   (unbind-key "C-l" helm-find-files-map)
 
@@ -478,7 +480,7 @@ Example:
   :init
   ;; (with-eval-after-load 'yasnippet
   ;;   (setq yas-snippet-dirs (remq 'yas-installed-snippets-dir yas-snippet-dirs)))
-  (add-hook 'prog-mode-hook 'yas-minor-mode-on) ; For emacs24+, replace `yas-global-mode'
+  (add-hook 'prog-mode-hook 'yas-minor-mode) ; For emacs24+, replace `yas-global-mode'
   :config
   (setq yas-expand-only-for-last-commands nil
         yas-key-syntaxes '("w_" "w_." "^ ")
@@ -602,7 +604,7 @@ Example:
                   ("\\`hydra-" . "+h/")
                   ("\\`org-babel-" . "ob/")
                   ("\\`my/" . "")))
-    (add-to-list 'which-key-description-replacement-alist item)))
+    (add-to-list 'which-key-replacement-alist item)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; programming
