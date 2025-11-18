@@ -173,12 +173,12 @@ alias fgrep="fgrep ${GREP_FLAGS}"
 ################
 
 # Search history use up/down arrow keys.
-bindkey "^[[A" history-search-backward
-bindkey "^[[B" history-search-forward
-bindkey "^U"   backward-kill-line # instead of kill-whole-line
-bindkey ' '    magic-space        # also do history expansion on space
-bindkey '\ei'  menu-complete      # menu completion via esc-i
-bindkey -s '\eo' 'cd ..\n'        # goto parent directory
+bindkey "^[[A" history-search-backward # <Up>
+bindkey "^[[B" history-search-forward  # <Down>
+bindkey "^U"   backward-kill-line      # instead of kill-whole-line
+bindkey ' '    magic-space             # also do history expansion on space
+bindkey '\ei'  menu-complete           # <ESC>i, menu completion
+bindkey -s '\eo' 'cd ..\n'             # <ESC>o, goto parent directory
 # Edit the current command line in $EDITOR
 autoload -U edit-command-line
 zle -N edit-command-line
