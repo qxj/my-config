@@ -154,7 +154,8 @@
 
 [user]
   name = Julian
-  email = jun.ist@gmail.com
+  email = junist@gmail.com
+	signingkey = 0F960250777E20DC
 [http]
   postBuffer = 2M
 # proxy = 127.0.0.1:1080
@@ -163,3 +164,5 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
+[credential]
+	helper = osxkeychain

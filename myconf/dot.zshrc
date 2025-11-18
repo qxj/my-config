@@ -51,23 +51,25 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local}/zinit/zinit.git"
 }
 source "${ZINIT_HOME}/zinit.zsh"
 
-
 zinit ice compile'(pure|async).zsh' pick"async.zsh" src"pure.zsh"; zinit light sindresorhus/pure
 zinit wait silent for \
   if'which git>/dev/null' OMZP::git \
   if'[[ $OSTYPE == *darwin* ]]' OMZP::macos \
   light-mode esc/conda-zsh-completion \
   light-mode zdharma/fast-syntax-highlighting
-
 #zinit ice from"gh-r" as"program"; zinit load junegunn/fzf-bin
 
 # enable zsh autocomplete
 autoload -U compinit && compinit
 zmodload -i zsh/complist
 
+# 在 Pure 的 preprompt 里追加“当前时间”段
+
 ################
 # User configuration
 ################
+RPROMPT='%F{245}[%*]%f'
+
 PATH=$HOME/.local/bin:$PATH
 PATH=/usr/local/bin:$PATH
 PATH=/usr/local/sbin:$PATH
@@ -86,6 +88,8 @@ export MANPAGER="less -X"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+export HOMEBREW_NO_ENV_HINTS="1"
 
 export PS_FORMAT="pid,ppid,user,pri,ni,vsz,rss,pcpu,pmem,tty,stat,args"
 
@@ -115,17 +119,13 @@ fi
 #  export PATH=$HOME/miniconda3/bin:$PATH
 #fi
 
-if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
-  export WORKON_HOME=$HOME/.virtualenvs
-  export VIRTUALENVWRAPPER_PYTHON=python3
-  source /usr/local/bin/virtualenvwrapper_lazy.sh
-fi
-
 # quick access to files and directories
 if which fasd >/dev/null; then
     eval "$(fasd --init auto)"
     bindkey '^X^A' fasd-complete
 fi
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
 
 # command-line fuzzy finder
 if [ -f ~/.fzf.zsh ]; then
@@ -224,4 +224,5 @@ cdg() {
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
 
