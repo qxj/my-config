@@ -53,10 +53,11 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 zinit ice compile'(pure|async).zsh' pick"async.zsh" src"pure.zsh"; zinit light sindresorhus/pure
 zinit wait silent for \
-  if'which git>/dev/null' OMZP::git \
-  if'[[ $OSTYPE == *darwin* ]]' OMZP::macos \
-  light-mode esc/conda-zsh-completion \
-  light-mode zdharma/fast-syntax-highlighting
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" zdharma-continuum/fast-syntax-highlighting \
+  blockf zsh-users/zsh-completions \
+  atload"!_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
+  if'(( $+commands[git] ))' OMZP::git \
+  if'[[ $OSTYPE == *darwin* ]]' OMZP::macos
 #zinit ice from"gh-r" as"program"; zinit load junegunn/fzf-bin
 
 # enable zsh autocomplete

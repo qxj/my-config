@@ -498,6 +498,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'moll/vim-bbye'
 Plug 'scrooloose/syntastic'
 Plug 'dbeniamine/cheat.sh-vim'
+Plug 'github/copilot.vim'
 
 call plug#end()
 
