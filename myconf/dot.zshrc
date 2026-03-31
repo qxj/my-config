@@ -97,29 +97,6 @@ export PS_FORMAT="pid,ppid,user,pri,ni,vsz,rss,pcpu,pmem,tty,stat,args"
 export FD_OPTIONS="--follow --exclude .git --exclude node_modules"
 export BAT_PAGER="less -R"
 
-# Java environment
-if [[ $OSTYPE == *darwin* ]]; then
-  export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-  export JAVAFX_HOME=$JAVA_HOME/jre/lib
-fi
-if which jenv >/dev/null; then
-  export JENV_ROOT=/usr/local/var/jenv
-  #eval "$(jenv init -)"
-fi
-
-# Python environment
-if which pyenv >/dev/null; then
-  export PYENV_ROOT=/usr/local/var/pyenv
-  eval "$(pyenv init -)"
-  if which pyenv-virtualenv-init >/dev/null; then
-    eval "$(pyenv virtualenv-init -)"
-  fi
-fi
-
-#if [ -f $HOME/miniconda3/bin/python ]; then
-#  export PATH=$HOME/miniconda3/bin:$PATH
-#fi
-
 # quick access to files and directories
 if which fasd >/dev/null; then
     eval "$(fasd --init auto)"
@@ -218,12 +195,28 @@ cdg() {
   cd "${topdir}/${1}"
 }
 
-
 ################
-# Local zsh configuration
+# Developing Enviornment
 ################
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+## Nodejs
+# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+## Python
+# curl -LsSf https://astral.sh/uv/install.sh | sh
+
+## Java
+# curl -s "https://get.sdkman.io" | bash
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+#################
+# Local zsh configuration
+################
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+# !BE CAUTIOUS TO MODIFY $PATH, MAY CAUSE SDKMAN FAIL!

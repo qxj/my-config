@@ -153,16 +153,16 @@
   insteadOf = "bb:"
 
 [user]
-  name = Julian
+	name = Julian Qian
   email = junist@gmail.com
 	signingkey = 0F960250777E20DC
 [http]
   postBuffer = 2M
 # proxy = 127.0.0.1:1080
 [filter "lfs"]
-  required = true
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
 [credential]
 	helper = osxkeychain
