@@ -64,8 +64,6 @@ zinit wait silent for \
 autoload -U compinit && compinit
 zmodload -i zsh/complist
 
-# 在 Pure 的 preprompt 里追加“当前时间”段
-
 ################
 # User configuration
 ################
@@ -120,15 +118,6 @@ if [ -f ~/.fzf.zsh ]; then
     # Restore CTRL-T, ALT-C
     bindkey '^T' transpose-chars
     bindkey '^[c' capitalize-word
-fi
-
-# Pyspark and ipython notebook integration
-# https://gist.github.com/ololobus/4c221a0891775eaa86b0
-if which pyspark >/dev/null; then
-  export SPARK_HOME="/usr/local/Cellar/apache-spark/2.1.0/libexec/"
-  export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
-  export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.10.4-src.zip:$PYTHONPATH
-  export PYSPARK_DRIVER_PYTHON=`which ipython`
 fi
 
 ################
@@ -200,6 +189,15 @@ cdg() {
 ################
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Pyspark and ipython notebook integration
+# https://gist.github.com/ololobus/4c221a0891775eaa86b0
+if which pyspark >/dev/null; then
+  export SPARK_HOME="/usr/local/Cellar/apache-spark/2.1.0/libexec/"
+  export PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+  export PYTHONPATH=$SPARK_HOME/python/lib/py4j-0.10.4-src.zip:$PYTHONPATH
+  export PYSPARK_DRIVER_PYTHON=`which ipython`
+fi
 
 ## Nodejs
 # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
