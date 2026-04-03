@@ -67,6 +67,7 @@ zmodload -i zsh/complist
 ################
 # User configuration
 ################
+# 在 Pure 的 preprompt 里追加“当前时间”段
 RPROMPT='%F{245}[%*]%f'
 
 PATH=$HOME/.local/bin:$PATH
@@ -218,3 +219,5 @@ export SDKMAN_DIR="$HOME/.sdkman"
 ################
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 # !BE CAUTIOUS TO MODIFY $PATH, MAY CAUSE SDKMAN FAIL!
+
+
