@@ -478,27 +478,21 @@ imap <silent> <F7> <C-o><F7>
 call plug#begin('~/.vim/plugged')
 let g:plug_timeout = 180
 
-Plug 'kshenoy/vim-signature' "书签可视化的插件
-Plug 'majutsushi/tagbar' "taglist的增强版，查看标签，依赖于ctags
-Plug 'scrooloose/nerdcommenter' "多行注释，leader键+cc生成, leader+cu删除注释
-Plug 'lifepillar/vim-mucomplete'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-"Plug '/usr/local/opt/fzf' " installed by homebrew
-Plug 'junegunn/fzf.vim'
-Plug 'easymotion/vim-easymotion' "快速跳转，按两下leader键和s组合
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-"Plug 'davidhalter/jedi-vim'
-Plug 'ConradIrwin/vim-bracketed-paste' " 使用bracketed-paste mode，粘贴代码时避免格式化
+"Plug '/usr/local/opt/fzf' " installed by homebrew
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-rooter'
+Plug 'scrooloose/nerdcommenter' "多行注释，leader键+cc生成, leader+cu删除注释
+Plug 'moll/vim-bbye' " 关闭文件保留窗口 :Bd，比 :q 好用
+Plug 'easymotion/vim-easymotion' "快速跳转，按两下leader键和s组合
 "Plug 'mhinz/vim-startify'
-Plug 'thaerkh/vim-workspace'
-Plug 'godlygeek/tabular'
+"Plug 'thaerkh/vim-workspace' "保存/回复工作区，可以 :mksession 手动管理
+"Plug 'godlygeek/tabular' "文本对齐，如表格。可以使用 :set ve=all 手动替代
 Plug 'plasticboy/vim-markdown'
-Plug 'moll/vim-bbye'
-Plug 'scrooloose/syntastic'
 Plug 'dbeniamine/cheat.sh-vim'
-Plug 'github/copilot.vim'
+Plug 'github/copilot.vim', { 'on': [] }
 
 call plug#end()
 
@@ -521,33 +515,6 @@ let g:tagbar_compact = 1
 let g:tagbar_previewwin_pos = 'rightbelow'
 
 nnoremap <silent> <Leader>t :TagbarToggle<CR>
-" }}}
-
-" signature {{{
-let g:SignatureMap = {
-      \ 'Leader'             :  "m",
-      \ 'PlaceNextMark'      :  "m,",
-      \ 'ToggleMarkAtLine'   :  "m.",
-      \ 'PurgeMarksAtLine'   :  "m-",
-      \ 'DeleteMark'         :  "dm",
-      \ 'PurgeMarks'         :  "mda",
-      \ 'PurgeMarkers'       :  "m<BS>",
-      \ 'GotoNextLineAlpha'  :  "']",
-      \ 'GotoPrevLineAlpha'  :  "'[",
-      \ 'GotoNextSpotAlpha'  :  "`]",
-      \ 'GotoPrevSpotAlpha'  :  "`[",
-      \ 'GotoNextLineByPos'  :  "]'",
-      \ 'GotoPrevLineByPos'  :  "['",
-      \ 'GotoNextSpotByPos'  :  "mn",
-      \ 'GotoPrevSpotByPos'  :  "mp",
-      \ 'GotoNextMarker'     :  "[+",
-      \ 'GotoPrevMarker'     :  "[-",
-      \ 'GotoNextMarkerAny'  :  "]=",
-      \ 'GotoPrevMarkerAny'  :  "[=",
-      \ 'ListLocalMarks'     :  "ms",
-      \ 'ListLocalMarkers'   :  "m?"
-      \ }
-
 " }}}
 
 " rooter {{{
@@ -621,28 +588,12 @@ endfunction
 command! -nargs=+ -complete=dir AgIn call SearchWithAgInDirectory(<f-args>)
 " }}}
 
-" Jedi-vim {{{
-" All these mappings work only for python code:
-let g:jedi#completions_command = "<C-N>"
-let g:jedi#goto_command = '<Leader>d'
-let g:jedi#usages_command = '<Leader>o'
-let g:jedi#goto_assignments_command = '<Leader>a'
-let g:jedi#popup_on_dot = 0
-" Go to definition in new tab
-nmap <Leader>D :tab split<CR>:call jedi#goto()<CR>
-" }}}
-
-" vim-mucomplete {{{
-set noshowmode shortmess+=c
-set noinfercase
-set completeopt-=preview
-set completeopt+=menuone,noinsert,noselect
-set belloff+=ctrlg
-" The following line assumes `brew install llvm` in macOS
-let g:clang_library_path = '/usr/local/opt/llvm/lib/libclang.dylib'
-let g:clang_user_options = '-std=c++14'
-let g:clang_complete_auto = 1
-let g:mucomplete#enable_auto_at_startup = 1
+" {{{
+" 进入插入模式时才加载 Copilot
+augroup load_copilot
+  autocmd!
+  autocmd InsertEnter * call plug#load('copilot.vim') | autocmd! load_copilot
+augroup END
 " }}}
 
 " }}}
