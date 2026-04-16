@@ -66,6 +66,15 @@ set viminfo+=n~/.vim/viminfo
 " Set the working directory to wherever the open file lives
 set autochdir
 
+" 自动检测大文件（>50MB），禁用耗时功能
+autocmd BufReadPre *
+  \ if getfsize(expand("%")) > 50 * 1024 * 1024 |
+  \   set syntax=off |
+  \   set noswapfile noundofile nobackup nowritebackup |
+  \   set filetype= nomodeline noloadplugins |
+  \   set nocursorline nocursorcolumn |
+  \ endif
+
 " }}}
 
 " GUI settings
@@ -116,7 +125,7 @@ set splitright
 "set completeopt-=preview
 
 " show line numbers
-set number
+set nonumber
 set numberwidth=6
 set norelativenumber
 

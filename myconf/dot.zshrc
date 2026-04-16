@@ -24,7 +24,7 @@ unsetopt flow_control
 
 # History options
 HISTFILE=$HOME/.zsh_history
-HISTSIZE=99
+HISTSIZE=10000
 SAVEHIST=10000
 HISTORY_IGNORE="(bg|fg|rm*|clear|ls|pwd|history|exit|* --help)"
 setopt always_to_end
@@ -53,15 +53,15 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 zinit ice compile'(pure|async).zsh' pick"async.zsh" src"pure.zsh"; zinit light sindresorhus/pure
 zinit wait silent for \
-  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" zdharma-continuum/fast-syntax-highlighting \
+  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+  zdharma-continuum/fast-syntax-highlighting \
   blockf zsh-users/zsh-completions \
   atload"!_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
   if'(( $+commands[git] ))' OMZP::git \
   if'[[ $OSTYPE == *darwin* ]]' OMZP::macos
 #zinit ice from"gh-r" as"program"; zinit load junegunn/fzf-bin
 
-# enable zsh autocomplete
-autoload -U compinit && compinit
+#autoload -Uz compinit && compinit  # deprecated by ABOVE zinit zicompinit
 zmodload -i zsh/complist
 
 ################
@@ -70,9 +70,14 @@ zmodload -i zsh/complist
 # 在 Pure 的 preprompt 里追加“当前时间”段
 RPROMPT='%F{245}[%*]%f'
 
-PATH=$HOME/.local/bin:$PATH
-PATH=/usr/local/bin:$PATH
-PATH=/usr/local/sbin:$PATH
+typeset -U path
+path=(
+    $HOME/.local/bin
+    /opt/homebrew/bin
+    /usr/local/bin
+    /usr/local/sbin
+    $path
+)
 export PATH
 
 export EDITOR=vim
@@ -85,10 +90,10 @@ export GTAGSFORCECPP=true
 export MANPAGER="less -X"
 
 # homebrew tsinghua mirror
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+#export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
+#export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+#export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
-export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
 export HOMEBREW_NO_ENV_HINTS="1"
 
 export PS_FORMAT="pid,ppid,user,pri,ni,vsz,rss,pcpu,pmem,tty,stat,args"
@@ -97,12 +102,12 @@ export FD_OPTIONS="--follow --exclude .git --exclude node_modules"
 export BAT_PAGER="less -R"
 
 # quick access to files and directories
-if which fasd >/dev/null; then
-    eval "$(fasd --init auto)"
-    bindkey '^X^A' fasd-complete
+if (( $+commands[fasd] )) ; then
+  eval "$(fasd --init auto)"
+  bindkey '^X^A' fasd-complete
+elif (( $+commands[zoxide] )) ; then
+  eval "$(zoxide init zsh)"
 fi
-
-[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
 
 # command-line fuzzy finder
 if [ -f ~/.fzf.zsh ]; then
