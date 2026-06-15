@@ -24,8 +24,8 @@ unsetopt flow_control
 
 # History options
 HISTFILE=$HOME/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 HISTORY_IGNORE="(bg|fg|rm*|clear|ls|pwd|history|exit|* --help)"
 setopt always_to_end
 setopt append_history
@@ -42,6 +42,11 @@ setopt inc_append_history
 setopt interactive_comments
 setopt share_history
 
+# 每次画提示符前增量读回其它 window/pane 写进历史文件的新命令
+autoload -Uz add-zsh-hook
+_hist_import() { builtin fc -RI }
+add-zsh-hook precmd _hist_import
+
 ################
 # Zinit   https://www.jianshu.com/p/2e098dfecf4a
 ################
@@ -57,6 +62,7 @@ zinit wait silent for \
   zdharma-continuum/fast-syntax-highlighting \
   blockf zsh-users/zsh-completions \
   atload"!_zsh_autosuggest_start" zsh-users/zsh-autosuggestions \
+  supercrabtree/k \
   if'(( $+commands[git] ))' OMZP::git \
   if'[[ $OSTYPE == *darwin* ]]' OMZP::macos
 #zinit ice from"gh-r" as"program"; zinit load junegunn/fzf-bin
@@ -118,7 +124,11 @@ if [ -f ~/.fzf.zsh ]; then
     export FZF_DEFAULT_COMMAND="git ls-files --cached --others --exclude-standard | fd --type f --type l $FD_OPTIONS"
     export FZF_CTRL_T_COMMAND="fd $FD_OPTIONS"
     export FZF_ALT_C_COMMAND="fd --type d $FD_OPTIONS"
-    bindkey '^R' fzf-history-widget
+    # 按 C-r 前先把其它 window/pane 写进历史文件的新命令读回内存(fc -RI:
+    # 只增量读上次读取后的新条目),消除 share_history「延迟一拍」搜不到的问题。
+    fzf-history-widget-fresh() { builtin fc -RI; zle fzf-history-widget; }
+    zle -N fzf-history-widget-fresh
+    bindkey '^R' fzf-history-widget-fresh
     bindkey '^X^T' fzf-file-widget # CTRL-T
     bindkey '^X^Q' fzf-cd-widget   # ALT-C
     # Restore CTRL-T, ALT-C
@@ -224,5 +234,4 @@ export SDKMAN_DIR="$HOME/.sdkman"
 ################
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 # !BE CAUTIOUS TO MODIFY $PATH, MAY CAUSE SDKMAN FAIL!
-
 

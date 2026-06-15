@@ -257,12 +257,23 @@ endfunction " }}}
 let g:mapleader = "\<Space>"
 let g:maplocalleader = ","
 
-vnoremap <Leader>y "Copy selected text to system clipboard
-nmap <Leader>p "Paste system clipboard to vim
-nnoremap <CR> :noh<CR><CR>
+" My shortcuts
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <M-b> <S-Left>
+inoremap <M-f> <S-Right>
+inoremap <C-a> <Home>
+inoremap <C-e> <End>
+nnoremap <C-h> <Left>
+nnoremap <C-l> <Right>
+nnoremap <M-b> <S-Left>
+nnoremap <M-f> <S-Right>
+nnoremap <C-a> <Home>
+nnoremap <C-e> <End>
 
 " Disable search highlighting
 nnoremap <silent> <Esc><Esc> :nohlsearch<CR><Esc>
+nnoremap <CR> :noh<CR><CR>
 
 " indent
 vnoremap < <gv
@@ -303,7 +314,7 @@ map <M-Down> <c-w>j
 imap <M-Right> <ESC><c-w>l
 imap <M-Left> <ESC><c-w>h
 imap <M-Up> <ESC><c-w>k
-imap <M-Down> <ESC><c-w>
+imap <M-Down> <ESC><c-w>j
 
 " ,q and ,e - toggle quickfix window and location list
 nnoremap <silent> <Leader>q :call <SID>ToggleList('Quickfix List', 'c')<CR>
@@ -481,6 +492,46 @@ nnoremap <silent> <F7> <C-w><
 imap <silent> <F7> <C-o><F7>
 
 " }}}
+
+" autocmd
+" {{{
+
+" 智能输入法自动切换 (解决 Normal 模式中文输入法的干扰)
+if executable('im-select')
+    " 1. 定义你的输入法 ID（请根据第一步测试出的实际 ID 进行修改）
+    let g:vim_default_ime = 'com.apple.keylayout.ABC'                 " 英文 ID
+    let g:vim_insert_ime  = 'com.tencent.inputmethod.wetype.pinyin'   " 微信输入法中文 ID
+
+    " 2. 初始化：让临时变量记住当前处于英文状态
+    let b:saved_ime = g:vim_default_ime
+
+    " 3. 函数：切回普通模式时，自动记录当前输入法并强切为英文
+    function! SwitchToEnglish()
+        let l:current_ime = system('im-select')
+        if l:current_ime =~ g:vim_insert_ime
+            let b:saved_ime = g:vim_insert_ime
+        else
+            let b:saved_ime = g:vim_default_ime
+        endif
+        call system('im-select ' . g:vim_default_ime)
+    endfunction
+
+    " 4. 函数：进入插入模式时，恢复到上一次使用的输入法
+    function! RestoreIME()
+        if exists('b:saved_ime') && b:saved_ime == g:vim_insert_ime
+            call system('im-select ' . g:vim_insert_ime)
+        endif
+    endfunction
+
+    " 5. 绑定 Vim 事件自动触发
+    augroup IMEAutoSwitch
+        autocmd!
+        autocmd InsertLeave,FocusGained * call SwitchToEnglish()
+        autocmd InsertEnter * call RestoreIME()
+    augroup END
+endif
+" }}}
+
 
 " Load plug-ins
 " {{{
