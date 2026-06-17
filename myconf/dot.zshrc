@@ -42,11 +42,6 @@ setopt inc_append_history
 setopt interactive_comments
 setopt share_history
 
-# 每次画提示符前增量读回其它 window/pane 写进历史文件的新命令
-autoload -Uz add-zsh-hook
-_hist_import() { builtin fc -RI }
-add-zsh-hook precmd _hist_import
-
 ################
 # Zinit   https://www.jianshu.com/p/2e098dfecf4a
 ################
