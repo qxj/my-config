@@ -493,46 +493,6 @@ imap <silent> <F7> <C-o><F7>
 
 " }}}
 
-" autocmd
-" {{{
-
-" 智能输入法自动切换 (解决 Normal 模式中文输入法的干扰)
-if executable('im-select')
-    " 1. 定义你的输入法 ID（请根据第一步测试出的实际 ID 进行修改）
-    let g:vim_default_ime = 'com.apple.keylayout.ABC'                 " 英文 ID
-    let g:vim_insert_ime  = 'com.tencent.inputmethod.wetype.pinyin'   " 微信输入法中文 ID
-
-    " 2. 初始化：让临时变量记住当前处于英文状态
-    let b:saved_ime = g:vim_default_ime
-
-    " 3. 函数：切回普通模式时，自动记录当前输入法并强切为英文
-    function! SwitchToEnglish()
-        let l:current_ime = system('im-select')
-        if l:current_ime =~ g:vim_insert_ime
-            let b:saved_ime = g:vim_insert_ime
-        else
-            let b:saved_ime = g:vim_default_ime
-        endif
-        call system('im-select ' . g:vim_default_ime)
-    endfunction
-
-    " 4. 函数：进入插入模式时，恢复到上一次使用的输入法
-    function! RestoreIME()
-        if exists('b:saved_ime') && b:saved_ime == g:vim_insert_ime
-            call system('im-select ' . g:vim_insert_ime)
-        endif
-    endfunction
-
-    " 5. 绑定 Vim 事件自动触发
-    augroup IMEAutoSwitch
-        autocmd!
-        autocmd InsertLeave,FocusGained * call SwitchToEnglish()
-        autocmd InsertEnter * call RestoreIME()
-    augroup END
-endif
-" }}}
-
-
 " Load plug-ins
 " {{{
 call plug#begin('~/.vim/plugged')
